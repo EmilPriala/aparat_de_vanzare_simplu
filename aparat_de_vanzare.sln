@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aparat_de_vanzare", "aparat_de_vanzare\aparat_de_vanzare.csproj", "{694B3F9F-C3C1-409C-B74F-B1E3250699C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{694B3F9F-C3C1-409C-B74F-B1E3250699C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{694B3F9F-C3C1-409C-B74F-B1E3250699C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{694B3F9F-C3C1-409C-B74F-B1E3250699C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{694B3F9F-C3C1-409C-B74F-B1E3250699C1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0C3B2FB5-BDA4-43EE-BE8B-2A837E234888}
+	EndGlobalSection
+EndGlobal
