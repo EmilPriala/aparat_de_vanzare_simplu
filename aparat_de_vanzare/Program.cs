@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace aparat_de_vanzare
 {
-    abstract public class Coins 
+    public class Coins 
     {
         public static int[] coins; // pentru a adauga noi monede acceptate
         public static int[] coinsavailable;
@@ -44,6 +44,21 @@ namespace aparat_de_vanzare
                 }
                 coins = tokens2.ToArray();
             }
+            public static void CoinsStockSet() // pentru a crea o copie de tablou tip "deep"
+            {
+                coinsstock = new int[coinsavailable.Length];
+                string s = "";
+                for (int i = 0; i < coinsavailable.Length; i++)
+                {
+                    s = s + coinsavailable[i] + ",";
+                }
+                string[] tokens;
+                tokens = s.Split(',');
+                for (int i = 0; i < coinsstock.Length; i++)
+                {
+                    coinsstock[i] = int.Parse(tokens[i]);
+                }
+            }
             public static void DefaultCoins()
             {
                 coins = new int[3];
@@ -64,8 +79,7 @@ namespace aparat_de_vanzare
             public static void DispensableCoinsDefault()
             {
                 coinsavailable = new int[] { 1, 1, 0 };
-                coinsstock = new int[coinsavailable.Length];
-                coinsstock = coinsavailable;
+                CoinsStockSet();
                 refreshstock = true;
             }
             public static void DispensableCoinsOverride()
@@ -77,7 +91,7 @@ namespace aparat_de_vanzare
                     Console.Write($"{Coins.coins[i]}c :");
                     coinsavailable[i] = int.Parse(Console.ReadLine());
                 }
-                Console.WriteLine("Doriti ca stocul de monede sa se reactualizeze dupa fiecare ciclu de produse dispensat?");
+                Console.WriteLine("Doriti ca stocul de monede sa se reactualizeze dupa fiecare ciclu de produs dispensat?");
                 bool check = true;
                 while (check)
                 {
@@ -88,7 +102,7 @@ namespace aparat_de_vanzare
                         case "da":
                             refreshstock = true;
                             check = false;
-                            return;
+                            break;
                         case "nu":
                             return;
                         default: Console.WriteLine("'da' sau 'nu'"); break;
@@ -96,8 +110,7 @@ namespace aparat_de_vanzare
                 }
                 if (refreshstock)
                 {
-                    coinsstock = new int[coinsavailable.Length];
-                    coinsstock = coinsavailable;
+                    CoinsStockSet();
                 }
             }
             public static void Defaults()
@@ -120,7 +133,7 @@ namespace aparat_de_vanzare
         {
             public static void I_Setup()
             {
-                Console.WriteLine("~~ Doriti sa configurati manual aparatul? ( daca nu aparatul ruleaza cu setari implicite ) ~~");
+                Console.WriteLine("~~ Doriti sa configurati manual aparatul? ( daca nu, aparatul ruleaza cu setari implicite ) ~~");
                 bool check = true;
                 while (check)
                 {
@@ -134,7 +147,7 @@ namespace aparat_de_vanzare
                     }
                 }
             }
-            public static void I_Setup(int i)
+            public static void I_Setup(int i) // for debugging
             {
                 Type.Defaults();
             }
@@ -143,7 +156,7 @@ namespace aparat_de_vanzare
     public class Aparat : Coins
     {
         public static bool working = true;
-        public static void Work()
+        public void Work()
         {
             int merch = 0;
             int machinebalance = 0;
@@ -194,7 +207,7 @@ namespace aparat_de_vanzare
                 merch++;
                 Console.WriteLine("Ati primit un produs.");
                 machinebalance -= cost;
-                RestCalc(ref machinebalance, ref coinsstock);
+                RestCalc(ref machinebalance);
                 return;
             }
             if (machinebalance < cost) // nu returneaza produs si asteapta bani
@@ -203,7 +216,7 @@ namespace aparat_de_vanzare
                 return;
             }
         }
-        public static void RestCalc(ref int machinebalance, ref int[] coinsstock) // calculeaza cat rest trebuie sa dea / cat poate da
+        public static void RestCalc(ref int machinebalance) // calculeaza cat rest trebuie sa dea / cat poate da
         {
             int r;
             r = machinebalance;
@@ -211,10 +224,11 @@ namespace aparat_de_vanzare
             int[] coinsgiven = new int[CL]; // tablout pt monede date ca rest in acest ciclu
             if (refreshstock)
             {
-                coinsavailable = coinsstock;
+                
                 for (int i = 0; i < coinsavailable.Length; i++)
                 {
-                    Console.WriteLine(coinsstock[i] + "s");
+                   // Console.WriteLine(coinsavailable[i]);// + "s" + coinsstock[i]);
+                    coinsavailable[i] = coinsstock[i];
                 }
             }
             for (int i = CL - 1; i >= 0; i--)
@@ -231,15 +245,21 @@ namespace aparat_de_vanzare
                 }               
             }
             Console.WriteLine();
-            Console.Write($"Restul este:");           
+            Console.Write($"Restul este:");
+            bool restgiven = false;
             for (int j = 0; j < CL; j++)
             {
                 if(coinsgiven[j] > 0)
                 {
-                Console.Write($" {coinsgiven[j]} x {Coins.coins[j]}c ,");
-                machinebalance -= coinsgiven[j] * Coins.coins[j];
-                balance += coinsgiven[j] * Coins.coins[j];
+                    restgiven = true;
+                    Console.Write($" {coinsgiven[j]} x {Coins.coins[j]}c ,");
+                    machinebalance -= coinsgiven[j] * Coins.coins[j];
+                    balance += coinsgiven[j] * Coins.coins[j];
                 }
+            }
+            if (!restgiven)
+            {
+                Console.Write(" 0 ");
             }
             Console.WriteLine();
             return;
@@ -270,10 +290,11 @@ namespace aparat_de_vanzare
 
     public class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            CoinsConfig.Setup.I_Setup();           
-            Aparat.Work();
+            Aparat aparat = new Aparat();
+            CoinsConfig.Setup.I_Setup();
+            aparat.Work();
         }
     }
 }
